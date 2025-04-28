@@ -16,10 +16,10 @@ export function generateId(): string {
 export function isValidRedfinUrl(url: string): boolean {
   try {
     const parsedUrl = new URL(url);
-    return parsedUrl.hostname.includes('redfin.com') && 
-           parsedUrl.pathname.length > 1 && 
-           !parsedUrl.pathname.startsWith('/api');
-  } catch (e) {
+    return parsedUrl.hostname.includes('redfin.com') &&
+      parsedUrl.pathname.length > 1 &&
+      !parsedUrl.pathname.startsWith('/api');
+  } catch {
     return false;
   }
 }
@@ -27,9 +27,9 @@ export function isValidRedfinUrl(url: string): boolean {
 // Format date in a human-readable way
 export function formatDate(dateString: string): string {
   const date = new Date(dateString);
-  return new Intl.DateTimeFormat('en-US', { 
-    month: 'short', 
-    day: 'numeric', 
-    year: 'numeric' 
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
   }).format(date);
 }

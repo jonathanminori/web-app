@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { readdir, readFile } from 'fs/promises';
 import path from 'path';
 import { getAllListings } from "@/lib/storage";
@@ -7,12 +7,12 @@ import { ListingData } from "@/lib/types";
 // Storage directory
 const STORAGE_DIR = path.join(process.cwd(), '.listing-cache');
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   // Get memory listings
   const memoryListings = getAllListings();
   
   // Get file listings
-  let fileListings: ListingData[] = [];
+  const fileListings: ListingData[] = [];
   try {
     const files = await readdir(STORAGE_DIR);
     

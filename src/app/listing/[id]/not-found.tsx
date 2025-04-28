@@ -9,7 +9,7 @@ export default function ListingNotFound() {
         <div className="space-y-2">
           <h1 className="text-3xl font-bold">Listing Not Found</h1>
           <p className="text-muted-foreground">
-            The anonymous listing you're looking for doesn't exist or has expired.
+            The anonymous listing you&apos;re looking for doesn&apos;t exist or has expired.
           </p>
         </div>
         

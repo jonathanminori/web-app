@@ -50,7 +50,7 @@ export function UrlForm() {
 
       // Redirect to the listing page
       router.push(`/listing/${result.data.id}`);
-    } catch (err) {
+    } catch {
       setError("An error occurred while processing the request");
       setIsLoading(false);
     }

@@ -6,34 +6,34 @@ import { PhotoGallery } from "@/components/PhotoGallery";
 import { ListingCard } from "@/components/ListingCard";
 import { ShareButton } from "@/components/ShareButton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getListing, getAllListings } from "@/lib/storage";
+import { getListing } from "@/lib/storage";
 import { getListingFromFile } from "@/lib/server-storage";
 import { formatDate } from "@/lib/utils";
-import { ListingData } from "@/lib/types";
 
 // Enable debugging
 const DEBUG = true;
-function log(...args: any[]) {
+function log(...args: unknown[]) {
   if (DEBUG) console.log("[PAGE]", ...args);
 }
 
 interface ListingPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: ListingPageProps): Promise<Metadata> {
-  log("generateMetadata for ID:", params.id);
-  
+  const { id } = await params;
+  log("generateMetadata for ID:", id);
+
   // Try to get listing from in-memory storage first
-  let listing = getListing(params.id);
-  
+  let listing = getListing(id);
+
   // If not found in memory, try file storage
   if (!listing) {
     log("Listing not found in memory, trying file storage");
-    const fileBasedListing = await getListingFromFile(params.id);
-    
+    const fileBasedListing = await getListingFromFile(id);
+
     if (fileBasedListing) {
       listing = fileBasedListing;
       log("Found listing in file storage:", listing.id);
@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: ListingPageProps): Promise<Me
       };
     }
   }
-  
+
   log("Metadata generated successfully for listing:", listing.id);
   return {
     title: `Anonymous Listing | ${listing.specs.beds || '?'} Bed, ${listing.specs.baths || '?'} Bath Home`,
@@ -53,16 +53,17 @@ export async function generateMetadata({ params }: ListingPageProps): Promise<Me
 }
 
 export default async function ListingPage({ params }: ListingPageProps) {
-  log("Rendering page for ID:", params.id);
-  
+  const { id } = await params;
+  log("Rendering page for ID:", id);
+
   // Try to get listing from in-memory storage first
-  let listing = getListing(params.id);
-  
+  let listing = getListing(id);
+
   // If not found in memory, try file storage
   if (!listing) {
     log("Listing not found in memory, trying file storage");
-    const fileBasedListing = await getListingFromFile(params.id);
-    
+    const fileBasedListing = await getListingFromFile(id);
+
     if (fileBasedListing) {
       listing = fileBasedListing;
       log("Found listing in file storage:", listing.id);
@@ -71,9 +72,9 @@ export default async function ListingPage({ params }: ListingPageProps) {
       notFound();
     }
   }
-  
+
   log("Successfully found listing:", listing.id);
-  
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b py-4">
@@ -83,19 +84,19 @@ export default async function ListingPage({ params }: ListingPageProps) {
               <ArrowLeft className="h-4 w-4" />
               <span>Back to Home</span>
             </Link>
-            <ShareButton id={params.id} />
+            <ShareButton id={id} />
           </div>
         </div>
       </header>
-      
+
       <main className="flex-1 container max-w-6xl mx-auto px-4 py-8">
         <div className="grid gap-8">
           {/* Photo Gallery */}
           <PhotoGallery photos={listing.photos} />
-          
+
           {/* Listing Specs */}
           <ListingCard specs={listing.specs} />
-          
+
           {/* Description */}
           <Card>
             <CardHeader>
@@ -107,7 +108,7 @@ export default async function ListingPage({ params }: ListingPageProps) {
               </div>
             </CardContent>
           </Card>
-          
+
           {/* Features */}
           {listing.features.length > 0 && (
             <Card>
@@ -132,13 +133,13 @@ export default async function ListingPage({ params }: ListingPageProps) {
               </CardContent>
             </Card>
           )}
-          
+
           <div className="flex items-center justify-between text-sm text-muted-foreground">
             <p>Created on {formatDate(listing.createdAt)}</p>
-            <a 
-              href={listing.url} 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href={listing.url}
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-1 text-primary hover:underline"
             >
               View on Redfin

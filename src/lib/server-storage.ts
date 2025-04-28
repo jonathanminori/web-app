@@ -4,7 +4,7 @@ import { ListingData } from './types';
 
 // Enable debugging
 const DEBUG = true;
-function log(...args: any[]) {
+function log(...args: unknown[]) {
   if (DEBUG) console.log("[SERVER-STORAGE]", ...args);
 }
 
