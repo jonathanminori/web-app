@@ -11,7 +11,19 @@ export async function GET() {
   // Get memory listings
   const memoryListings = getAllListings();
   
-  // Get file listings
+  // In production, just return memory listings
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({
+      memory: {
+        count: memoryListings.length,
+        ids: memoryListings.map(l => l.id),
+        listings: memoryListings,
+      },
+      environment: process.env.NODE_ENV,
+    });
+  }
+  
+  // In development, also get file listings
   const fileListings: ListingData[] = [];
   try {
     const files = await readdir(STORAGE_DIR);
@@ -43,6 +55,7 @@ export async function GET() {
       count: fileListings.length,
       ids: fileListings.map(l => l.id),
       listings: fileListings,
-    }
+    },
+    environment: process.env.NODE_ENV,
   });
 }

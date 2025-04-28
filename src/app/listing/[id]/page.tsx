@@ -29,20 +29,27 @@ export async function generateMetadata({ params }: ListingPageProps): Promise<Me
   // Try to get listing from in-memory storage first
   let listing = getListing(id);
 
-  // If not found in memory, try file storage
-  if (!listing) {
+  // If not found in memory, try file storage (only in development)
+  if (!listing && process.env.NODE_ENV === 'development') {
     log("Listing not found in memory, trying file storage");
-    const fileBasedListing = await getListingFromFile(id);
-
-    if (fileBasedListing) {
-      listing = fileBasedListing;
-      log("Found listing in file storage:", listing.id);
-    } else {
-      log("Listing not found in file storage either");
-      return {
-        title: "Listing Not Found",
-      };
+    try {
+      const fileBasedListing = await getListingFromFile(id);
+      
+      if (fileBasedListing) {
+        listing = fileBasedListing;
+        log("Found listing in file storage:", listing.id);
+      }
+    } catch (error) {
+      log("Error reading from file storage:", error);
     }
+  }
+  
+  // If not found in either storage, return generic metadata
+  if (!listing) {
+    log("Listing not found for metadata");
+    return {
+      title: "Listing Not Found",
+    };
   }
 
   log("Metadata generated successfully for listing:", listing.id);
@@ -59,18 +66,25 @@ export default async function ListingPage({ params }: ListingPageProps) {
   // Try to get listing from in-memory storage first
   let listing = getListing(id);
 
-  // If not found in memory, try file storage
-  if (!listing) {
+  // If not found in memory, try file storage (only in development)
+  if (!listing && process.env.NODE_ENV === 'development') {
     log("Listing not found in memory, trying file storage");
-    const fileBasedListing = await getListingFromFile(id);
-
-    if (fileBasedListing) {
-      listing = fileBasedListing;
-      log("Found listing in file storage:", listing.id);
-    } else {
-      log("Listing not found in file storage either");
-      notFound();
+    try {
+      const fileBasedListing = await getListingFromFile(id);
+      
+      if (fileBasedListing) {
+        listing = fileBasedListing;
+        log("Found listing in file storage:", listing.id);
+      }
+    } catch (error) {
+      log("Error reading from file storage:", error);
     }
+  }
+  
+  // If still not found, return 404
+  if (!listing) {
+    log("Listing not found");
+    notFound();
   }
 
   log("Successfully found listing:", listing.id);

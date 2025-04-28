@@ -11,9 +11,35 @@ function log(...args: unknown[]) {
   if (DEBUG) console.log("[API]", ...args);
 }
 
+// CORS headers
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+};
+
+// Handle OPTIONS requests for CORS
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: corsHeaders,
+  });
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    // Parse request body
+    let body;
+    try {
+      body = await request.json();
+    } catch (parseError) {
+      log("Error parsing request body:", parseError);
+      return NextResponse.json(
+        { success: false, error: "Invalid JSON body" },
+        { status: 400, headers: corsHeaders }
+      );
+    }
+    
     const { url } = body;
     log("Received request for URL:", url);
 
@@ -21,7 +47,7 @@ export async function POST(request: NextRequest) {
       log("Invalid URL:", url);
       return NextResponse.json(
         { success: false, error: "Invalid Redfin URL" },
-        { status: 400 }
+        { status: 400, headers: corsHeaders }
       );
     }
 
@@ -40,7 +66,7 @@ export async function POST(request: NextRequest) {
           success: false, 
           error: `Failed to fetch listing: ${response.status} ${response.statusText}` 
         },
-        { status: 500 }
+        { status: 500, headers: corsHeaders }
       );
     }
 
@@ -183,10 +209,10 @@ export async function POST(request: NextRequest) {
       url,
     };
     
-    // Save to both in-memory storage and file storage for redundancy
+    // Save the listing
     try {
-      // Save to in-memory storage (for current process)
-      saveListing({
+      // Save to in-memory storage
+      const savedListing = saveListing({
         photos,
         description,
         specs: {
@@ -201,29 +227,38 @@ export async function POST(request: NextRequest) {
         url,
       });
       
-      // Also save to file storage (for persistence across requests)
-      await saveListingToFile(listing);
+      // In development, also try to save to file storage
+      if (process.env.NODE_ENV === 'development') {
+        try {
+          await saveListingToFile(listing);
+          log("Listing also saved to file storage");
+        } catch (fileError) {
+          // Just log the error but don't fail the request
+          log("Warning: Failed to save to file storage:", fileError);
+        }
+      }
+      
       log("Listing saved with ID:", listing.id);
+      return NextResponse.json({ 
+        success: true, 
+        data: savedListing 
+      }, { headers: corsHeaders });
     } catch (error) {
       log("Error saving listing:", error);
       return NextResponse.json(
         { success: false, error: "Failed to save listing" },
-        { status: 500 }
+        { status: 500, headers: corsHeaders }
       );
     }
-
-    return NextResponse.json({ 
-      success: true, 
-      data: listing 
-    });
   } catch (error) {
     console.error("Error processing Redfin listing:", error);
+    
     return NextResponse.json(
       { 
         success: false, 
         error: error instanceof Error ? error.message : "An unknown error occurred" 
       },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 }

@@ -1,0 +1,32 @@
+{
+  "id": "q1f2mcd1",
+  "createdAt": "2025-04-28T18:34:52.639Z",
+  "photos": [
+    "https://ssl.cdn-redfin.com/photo/84/bigphoto/508/769949508_0.jpg",
+    "https://ssl.cdn-redfin.com/photo/84/mbphotov3/508/genMid.769949508_10_0.jpg",
+    "https://ssl.cdn-redfin.com/photo/84/mbphotov3/508/genMid.769949508_30_0.jpg",
+    "https://ssl.cdn-redfin.com/photo/84/mbphotov3/508/genMid.769949508_16_0.jpg",
+    "https://ssl.cdn-redfin.com/photo/84/mbphotov3/508/genMid.769949508_24_0.jpg",
+    "https://ssl.cdn-redfin.com/photo/84/mbphotov3/508/genMid.769949508_6_0.jpg",
+    "https://ssl.cdn-redfin.com/photo/84/mbphotov3/508/genMid.769949508_20_0.jpg",
+    "https://maps.google.com/maps/api/staticmap?sensor=false&style=feature%3Aadministrative.land_parcel%7Cvisibility%3Aoff&style=feature%3Alandscape.man_made%7Cvisibility%3Aoff&style=feature%3Atransit.station%7Chue%3A0xffa200&center=45.4404317%2C-122.7067482&channel=desktop_xdp_above_fold_static_preview&size=200x200&scale=1&format=jpg&zoom=11&client=gme-redfin&signature=g-0P3O4SLSKJCsuqyLDvVQ47Ro8=",
+    "https://ssl.cdn-redfin.com/vLATEST/images/apple-app-download-badge-284x84.png",
+    "https://ssl.cdn-redfin.com/vLATEST/images/google-app-download-badge-284x84.png",
+    "https://ssl.cdn-redfin.com/vLATEST/images/apple-app-download-badge-284x84.png",
+    "https://ssl.cdn-redfin.com/vLATEST/images/google-app-download-badge-284x84.png",
+    "https://ssl.cdn-redfin.com/vLATEST/images/footer/flags/united-states.png",
+    "https://ssl.cdn-redfin.com/vLATEST/images/footer/flags/canada.png",
+    "https://ssl.cdn-redfin.com/vLATEST/images/footer/equal-housing.png"
+  ],
+  "description": "OPEN HOUSE Tuesday (29TH) 10AM-12PM.Welcome to this beautiful home in a fantastic, established neighborhood, offering year round fun, comfort and convenience. Boasting 4 spacious bedrooms and 2 1/2 updated baths, this home features new carpet and flooring throughout, giving it a fresh, contemporary feel. The open floor plan offers plenty of space for both family living and entertaining, while the stunning granite countertops in the kitchen add an elegant touch. Solar panels and an EV charger complete the package. This home is minutes to downtown Portland, Lake Oswego and Tryon Creek Park making commuting and outdoor activities a breeze. Steps from top-rated schools, green space and walking paths with the convenience of shopping at Starbucks, New Seasons, and Columbia Outlet less than 1 mile away. This is a home for all seasons: a spacious yard to play in, garden or host a BBQ in the warm months.  In winter, a cozy fireplace and ample natural light make this a perfect retreat.",
+  "specs": {
+    "beds": 4,
+    "baths": 2.5,
+    "squareFeet": 2328,
+    "lotSize": null,
+    "yearBuilt": null,
+    "propertyType": null
+  },
+  "features": [],
+  "url": "https://www.redfin.com/OR/Portland/11726-SW-29th-Pl-97219/home/26519015"
+}
