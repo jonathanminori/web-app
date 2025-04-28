@@ -5,12 +5,48 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
+interface ListingSpecs {
+  beds?: number;
+  baths?: number;
+  sqft?: number;
+  [key: string]: any;
+}
+
+interface ListingData {
+  id: string;
+  url: string;
+  photos: string[];
+  specs: ListingSpecs;
+  description: string;
+  features: Array<{
+    title: string;
+    items: string[];
+  }>;
+  createdAt: string;
+}
+
+interface RawData {
+  status: number;
+  statusText: string;
+  contentType: string;
+  text: string;
+}
+
+interface DisplayData {
+  type: "listing" | "raw";
+  data: ListingData | RawData;
+}
+
+function isListingData(data: ListingData | RawData): data is ListingData {
+  return 'photos' in data && 'specs' in data && 'description' in data;
+}
+
 export default function DebugPage() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
-  const [displayData, setDisplayData] = useState<{ type: string; data: any } | null>(null);
+  const [displayData, setDisplayData] = useState<DisplayData | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,11 +65,11 @@ export default function DebugPage() {
       });
 
       const contentType = response.headers.get("content-type");
-      
+
       if (contentType && contentType.includes("application/json")) {
         const data = await response.json();
         setResult(data);
-        
+
         if (data.success && data.data) {
           // Success - display the data
           setDisplayData({
@@ -68,7 +104,7 @@ export default function DebugPage() {
   return (
     <div className="container py-8">
       <h1 className="text-2xl font-bold mb-6">API Debug Tool</h1>
-      
+
       <Card className="mb-8">
         <CardHeader>
           <CardTitle>Test Scrape API</CardTitle>
@@ -119,7 +155,7 @@ export default function DebugPage() {
         </Card>
       )}
 
-      {displayData?.type === "listing" && (
+      {displayData?.type === "listing" && isListingData(displayData.data) && (
         <Card>
           <CardHeader>
             <CardTitle>Listing Preview</CardTitle>
@@ -131,9 +167,9 @@ export default function DebugPage() {
                 <div className="grid grid-cols-3 gap-2">
                   {displayData.data.photos.slice(0, 6).map((photo: string, i: number) => (
                     <div key={i} className="aspect-square relative bg-muted rounded-md overflow-hidden">
-                      <img 
-                        src={photo} 
-                        alt={`Photo ${i+1}`} 
+                      <img
+                        src={photo}
+                        alt={`Photo ${i + 1}`}
                         className="object-cover w-full h-full"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Cpath d='M30 40 L70 60 M70 40 L30 60' stroke='%23aaa' stroke-width='2'/%3E%3C/svg%3E";
@@ -168,8 +204,8 @@ export default function DebugPage() {
               <div>
                 <h3 className="font-medium mb-2">Description</h3>
                 <p className="whitespace-pre-line text-sm">
-                  {displayData.data.description.length > 300 
-                    ? `${displayData.data.description.substring(0, 300)}...` 
+                  {displayData.data.description.length > 300
+                    ? `${displayData.data.description.substring(0, 300)}...`
                     : displayData.data.description}
                 </p>
               </div>
@@ -178,7 +214,7 @@ export default function DebugPage() {
         </Card>
       )}
 
-      {displayData?.type === "raw" && (
+      {displayData?.type === "raw" && !isListingData(displayData.data) && (
         <Card>
           <CardHeader>
             <CardTitle>Raw Response</CardTitle>
